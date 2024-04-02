@@ -1,30 +1,69 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Exemplo de uso do useMemo em React
 
-Currently, two official plugins are available:
+Neste exemplo, vamos explorar a utilização do hook useMemo em React para otimização de performance.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Descrição
 
-## Expanding the ESLint configuration
+O hook useMemo desempenha um papel fundamental na otimização de aplicações React, permitindo a memoização de valores computados. Isso é especialmente útil em componentes que renderizam frequentemente e realizam cálculos intensivos.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Caso de Estudo
 
-- Configure the top-level `parserOptions` property like this:
+### Utilização Correta
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+No exemplo correto, vamos memoizar o cálculo da soma dos elementos de um array de números. Dessa forma, garantimos que a soma seja recalculada apenas quando o array de números mudar, melhorando o desempenho da aplicação.
+
+```jsx
+import React, { useState, useMemo } from 'react';
+
+const ComponenteCorreto = () => {
+  const [numeros, setNumeros] = useState([1, 2, 3, 4, 5]);
+
+  const soma = useMemo(() => {
+    console.log("Calculando a soma...");
+    return numeros.reduce((acc, curr) => acc + curr, 0);
+  }, [numeros]);
+
+  const adicionarNumero = () => {
+    const novoNumero = Math.floor(Math.random() * 10) + 1;
+    setNumeros([...numeros, novoNumero]);
+  };
+
+  return (
+    <div>
+      <p>A soma dos números é: {soma}</p>
+      <button onClick={adicionarNumero}>Adicionar Número</button>
+    </div>
+  );
+};
+
+export default ComponenteCorreto;
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Utilização Incorreta
+
+No exemplo incorreto, vamos memoizar uma função que retorna uma string estática. Isso não traz benefícios significativos de desempenho, pois a string nunca muda e não há cálculos envolvidos. Portanto, o uso do useMemo aqui é desnecessário e pode até introduzir complexidade desnecessária ao código.
+
+```jsx
+import React, { useMemo } from 'react';
+
+const ComponenteIncorreto = () => {
+  const resultado = useMemo(() => {
+    return "Este é um exemplo de uso incorreto do useMemo.";
+  }, []);
+
+  return (
+    <div>
+      {resultado}
+    </div>
+  );
+};
+
+export default ComponenteIncorreto;
+```
+
+## Conclusão
+
+O useMemo é uma ferramenta poderosa para otimizar a performance em aplicações React, desde que seja utilizado com sabedoria. Reservar seu uso para situações em que cálculos intensivos precisam ser memoizados pode melhorar significativamente a experiência do usuário e garantir que a aplicação seja executada de forma eficiente.
+
+
